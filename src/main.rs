@@ -1,7 +1,10 @@
-fn main() {
-    println!("Weight on Mars: {}", calculate_weight_on_mars(100.0));
-}
+use http::Method;
+use http::Request;
+use server::Server;
 
-fn calculate_weight_on_mars(weight: f32) -> f32 {
-    (weight / 9.81) * 3.711
+mod http;
+mod server;
+fn main() {
+    let server = Server::new("127.0.0.1:8080".to_string());
+    server.run();
 }
