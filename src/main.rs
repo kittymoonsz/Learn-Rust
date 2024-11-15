@@ -1,34 +1,45 @@
-use rand::Rng;
-use std::{cmp::Ordering, io};
+    // TESTING OWNERSHIP AND REFERENCES
+    // Each value in Rust has an owner.
+    // There can only be one owner at a time.
+    // When the owner goes out of scope, the value will be dropped.
 fn main() {
-    println!("Guess the number!");
+    //References and Borrowing
+    let s1: String = String::from("Helloooooooo");
+    let (s2, length) = calculate_length(s1);
 
-    let secret_number = rand::thread_rng().gen_range(1..=100);
+    println!("{s2} has length of {length}\n");
+    //println!("{s1}"); // This doesn't compile because s1's ownership moved to s2
 
-    println!("The secret number is: {secret_number}");
-    loop {
-        println!("Input your guess.");
+    let ref1: String = String::from("Hellooooo");
+    let len = calculate_length_with_reference(&ref1);
 
-        let mut guess = String::new();
+    println!("{ref1} has length of {len}");
 
-        io::stdin()
-            .read_line(&mut guess)
-            .expect("Failed to read line");
+    // Slice
+    let word = String::from("Hello world");
+    let word = first_word(&word);
+    println!("{}", word);
 
-        let guess: u32 = match guess.trim().parse() {
-            Ok(num) => num,
-            Err(_) => continue,
-        };
+}
 
-        println!("You guessed: {guess}");
+// References and Borrowing
+fn calculate_length(s: String) -> (String, usize) {
+    let length = s.len();
 
-        match guess.cmp(&secret_number) {
-            Ordering::Greater => println!("Too big!"),
-            Ordering::Equal => {
-                println!("You win!");
-                break;
-            }
-            Ordering::Less => println!("Too small!"),
+    (s, length)
+}
+fn calculate_length_with_reference(s: &String) -> usize {
+    s.len()
+}
+
+// Slice
+fn first_word(s: &String) -> &str {
+    let bytes = s.as_bytes();
+
+    for(i, &item) in bytes.iter().enumerate() {
+        if item == b' ' {
+            return &s[..i];
         }
     }
+    &s[..]
 }
